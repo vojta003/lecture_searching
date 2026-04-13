@@ -1,9 +1,20 @@
 import os
 import json
+import matplotlib.pyplot as plt
+import generators
+import time
 
 # get current working directory path
 cwd_path = os.getcwd()
 
+def hodiny(typ, sekvence, bod, opakovani=5):
+    časy = []
+    for _ in range(opakovani):
+        start = time.perf_counter()
+        typ(sekvence, bod)
+        end = time.perf_counter()
+        časy.append(end - start)
+    return sum(časy) / len(časy)
 
 def read_data(file_name, field):
     data = {}
@@ -50,6 +61,8 @@ def binary_search(seznam, shoda):
     return None
 
 
+
+
 def main():
     sequential_data = read_data("sequential.json", "unordered_numbers")
     sequential_data_2 = read_data("sequential.json", "ordered_numbers")
@@ -61,5 +74,35 @@ def main():
     pozice = binary_search(sequential_data_2, 22)
     print(f"Pozice hledaného čísla v bináru je {pozice}")
 
+
+
 if __name__ == '__main__':
     main()
+    vel = [100, 500, 1000, 5000, 10000]
+
+    linearka = []
+    binarka = []
+    casovac = []
+
+    for n in vel:
+        seq_unordered = generators.unordered_sequence(max_len=n)
+        seq_ordered = generators.ordered_sequence(max_len=n)
+        seq_set = set(seq_ordered)
+
+        target = seq_ordered[-1]
+
+        linearka.append(hodiny(linear_search, seq_unordered, target))
+        binarka.append(hodiny(binary_search, seq_ordered, target))
+        casovac.append(hodiny(lambda s, t: t in s, seq_set, target))
+
+    plt.figure(figsize=(10, 6))
+    plt.plot(vel, linearka, marker='o', label="Sekvenční vyhledávání (list)")
+    plt.plot(vel, binarka, marker='o', label="Binární vyhledávání (list)")
+    plt.plot(vel, casovac, marker='o', label="Test členství (set)")
+
+    plt.xlabel("Velikost vstupu (n)")
+    plt.ylabel("Čas běhu [s]")
+    plt.title("Porovnání vyhledávacích algoritmů podle velikosti vstupu")
+    plt.legend()
+    plt.grid(True)
+    plt.show()
