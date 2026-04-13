@@ -33,12 +33,33 @@ def linear_search(sekvence, cislo):
             result["vyskyt"] = count
     return result
 
+def binary_search(seznam, shoda):
+
+    start = 0
+    konec = len(seznam) - 1
+
+    while start <= konec:
+        stretnutí = (start + konec) // 2
+
+        if seznam[stretnutí] == shoda:
+            return stretnutí
+        elif seznam[stretnutí] < shoda:
+            start = stretnutí + 1
+        else:
+            konec = stretnutí - 1
+    return None
+
 
 def main():
     sequential_data = read_data("sequential.json", "unordered_numbers")
-    print(sequential_data)
+    sequential_data_2 = read_data("sequential.json", "ordered_numbers")
+    print(f"Data pro lineár: {sequential_data}")
+    print(f"Data pro binár: {sequential_data_2}")
+
     vysledek = linear_search(sequential_data,9)
-    print(vysledek)
+    print(f"Výsledný slovník po lineáru {vysledek}")
+    pozice = binary_search(sequential_data_2, 22)
+    print(f"Pozice hledaného čísla v bináru je {pozice}")
 
 if __name__ == '__main__':
     main()
