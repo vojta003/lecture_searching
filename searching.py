@@ -19,13 +19,26 @@ def read_data(file_name, field):
         return None
     with open(file_path, "r", encoding="utf-8") as file:
         data = json.load(file)
-    if field in data:
-        return data
+    if not field in data:
+        return None
     return data[field]
+
+def linear_search(sekvence, cislo):
+    result = {}
+    count = 0
+    for i, sek in enumerate(sekvence):
+        if sek == cislo:
+            count += 1
+            result["pozice"] = i
+            result["vyskyt"] = count
+    return result
+
 
 def main():
     sequential_data = read_data("sequential.json", "unordered_numbers")
     print(sequential_data)
+    vysledek = linear_search(sequential_data,9)
+    print(vysledek)
 
 if __name__ == '__main__':
     main()
